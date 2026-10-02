@@ -1,0 +1,8 @@
+{
+  "name": "InsureDrive",
+  "description": "Check, renew and compare vehicle insurance with interactive number plate scanning and policy comparison.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
