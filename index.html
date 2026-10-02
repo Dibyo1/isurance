@@ -40,33 +40,80 @@ a{color:inherit}
 #plate.ready{opacity:1;pointer-events:auto}
 #plate.shake{animation:shake .38s}
 @keyframes shake{20%{transform:translateX(-1.6%)}40%{transform:translateX(1.6%)}60%{transform:translateX(-1%)}80%{transform:translateX(.8%)}}
-#chars{position:absolute;left:4cqh;right:94cqh;top:0;bottom:0;display:flex;align-items:center;justify-content:center;
-  font-family:"Barlow Condensed","Arial Narrow",Bahnschrift,sans-serif;font-weight:700;font-size:62cqh;line-height:1;letter-spacing:.045em;text-transform:uppercase;white-space:nowrap;pointer-events:none}
-.ch{display:inline-block;color:#14161b;text-shadow:0 .07em .1em rgba(0,0,0,.38);animation:float 2.1s ease-in-out var(--d,0s) infinite;will-change:transform}
-.ch>i{display:inline-block;font-style:normal;animation:pop .32s cubic-bezier(.2,.9,.3,1.25)}
+
+/* Full usable area of the plate, perfectly centered with balanced margins */
+#chars{position:absolute;inset:0;width:100%;height:100%;margin:0 auto;display:flex;align-items:center;justify-content:center;padding:0 4%;
+  font-family:"Barlow Condensed","Arial Narrow",Bahnschrift,sans-serif;font-weight:700;font-size:72cqh;line-height:1;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;pointer-events:none;box-sizing:border-box;z-index:2}
+.ch{display:inline-block;color:#14161b;text-shadow:0 .06em .08em rgba(0,0,0,.35);animation:float 2.1s ease-in-out var(--d,0s) infinite;will-change:transform}
+.ch>i{display:inline-block;font-style:normal;animation:pop .3s cubic-bezier(.2,.9,.3,1.25)}
 @keyframes pop{from{opacity:0;transform:translateY(.25em) scale(.7)}to{opacity:1;transform:none}}
-@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.075em) scale(1.035)}}
-#plate.engrave .ch{animation:sink .55s cubic-bezier(.3,.7,.2,1) forwards;animation-delay:calc(var(--i,0)*45ms)}
-@keyframes sink{
-  from{transform:translateY(-.09em) scale(1.06);color:#14161b;text-shadow:0 .18em .2em rgba(0,0,0,.4)}
-  to{transform:none;color:#2a2c32;text-shadow:0 .018em 0 rgba(255,255,255,.75),0 -.02em 0 rgba(0,0,0,.65),.03em .03em .04em rgba(0,0,0,.3)}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.06em) scale(1.025)}}
+
+/* Mechanical stamp punch when confirming */
+#plate.engraving #chars{animation:platePunch .22s cubic-bezier(.2,.9,.3,1) forwards}
+@keyframes platePunch{
+  0%{transform:scale(1.015)}
+  60%{transform:translateY(.04em) scale(.985)}
+  100%{transform:translateY(0) scale(1)}
 }
-#caret{display:inline-block;width:.07em;height:.78em;margin-left:.06em;background:#14161b;animation:blink 1s steps(1) infinite}
-#plate.engrave #caret{display:none}
+
+/* Authentic physical engraved / embossed metal stamping */
+#plate.engrave #chars,#plate.engraving #chars{
+  color:#121418;
+  text-shadow:
+    0 -1px 1px rgba(0,0,0,.95),
+    0 -2px 3px rgba(0,0,0,.7),
+    0 1.5px 1px rgba(255,255,255,.85),
+    0 2.5px 2px rgba(255,255,255,.45),
+    1px 1px 2px rgba(0,0,0,.55),
+    -1px 0 1px rgba(0,0,0,.4);
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.45));
+}
+#plate.engrave,#plate.engraving{
+  box-shadow:
+    inset 0 0 0 1.5px rgba(0,0,0,.45),
+    inset 0 1px 3px rgba(0,0,0,.3),
+    0 2px 8px rgba(0,0,0,.25);
+  border-radius:4px;
+}
+
+/* PERMANENTLY LOCKED TO PLATE: completely freeze characters, no drifting, bouncing, or sliding */
+#plate.engrave .ch,#plate.engraving .ch,
+#plate.engrave .ch>i,#plate.engraving .ch>i{
+  animation:none!important;
+  transform:none!important;
+  transition:none!important;
+  will-change:auto!important;
+}
+#plate.engrave #chars{
+  transform:none!important;
+  animation:none!important;
+  transition:none!important;
+}
+#plate.engrave #caret,#plate.engraving #caret{display:none!important}
+#plate.engrave #plateInput,#plate.engraving #plateInput{pointer-events:none!important;cursor:default!important}
+
+#caret{display:inline-block;width:.07em;height:.82em;margin-left:.08em;background:#14161b;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-#phold{position:absolute;left:5cqh;right:94cqh;top:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:2cqh;
-  font:600 17cqh "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(20,22,27,.42);pointer-events:none;white-space:nowrap}
-#phold b{display:inline-block;width:.6cqh;height:30cqh;background:#14161b;animation:blink 1s steps(1) infinite}
+#phold{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2cqh;
+  font:600 22cqh "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(20,22,27,.45);pointer-events:none;white-space:nowrap}
+#phold b{display:inline-block;width:.6cqh;height:36cqh;background:#14161b;animation:blink 1s steps(1) infinite}
 #plateInput{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;background:transparent;color:transparent;cursor:text;z-index:1}
-#go{position:absolute;right:3.4cqh;top:50%;width:64cqh;height:64cqh;transform:translateY(-50%);z-index:2;border:0;border-radius:50%;
-  background:#14161b;color:#fff;display:grid;place-items:center;box-shadow:0 1.5cqh 3cqh rgba(0,0,0,.38),inset 0 0 0 .7cqh rgba(255,255,255,.14);
-  transition:opacity .25s,transform .35s}
-#go svg{width:48%;height:48%}
-#go:disabled{opacity:.28;cursor:not-allowed}
-#go.live{animation:ring 1.7s ease-out infinite}
-@keyframes ring{0%{box-shadow:0 1.5cqh 3cqh rgba(0,0,0,.38),0 0 0 0 rgba(255,178,62,.8)}100%{box-shadow:0 1.5cqh 3cqh rgba(0,0,0,.38),0 0 0 14cqh rgba(255,178,62,0)}}
-#plate.engrave #go{opacity:0;transform:translateY(-50%) scale(.4);pointer-events:none}
-#glint{position:absolute;inset:-40% -6%;overflow:hidden;pointer-events:none}
+
+/* Right arrow button OUTSIDE the name plate with intentional gap */
+#go{position:absolute;left:calc(100% + clamp(10px,2.5cqw,20px));top:50%;width:58cqh;height:58cqh;min-width:40px;min-height:40px;max-width:54px;max-height:54px;
+  transform:translateY(-50%);z-index:10;border:1.5px solid rgba(255,255,255,.22);border-radius:50%;
+  background:#14161b;color:#fff;display:grid;place-items:center;box-shadow:0 4px 18px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.12);
+  transition:opacity .35s ease,transform .25s ease,background-color .2s,border-color .2s,box-shadow .2s;cursor:pointer}
+#go svg{width:50%;height:50%}
+#go:hover:not(:disabled){background:#1e222b;transform:translateY(-50%) scale(1.06);border-color:rgba(255,178,62,.65);box-shadow:0 6px 22px rgba(0,0,0,.6),0 0 0 2px rgba(255,178,62,.35)}
+#go:disabled{opacity:.32;cursor:not-allowed}
+#go.live{background:linear-gradient(135deg,#242833,#14161b);border-color:rgba(255,178,62,.85);color:#ffb23e;animation:ring 1.7s ease-out infinite}
+@keyframes ring{0%{box-shadow:0 4px 18px rgba(0,0,0,.5),0 0 0 0 rgba(255,178,62,.8)}100%{box-shadow:0 4px 18px rgba(0,0,0,.5),0 0 0 14cqh rgba(255,178,62,0)}}
+#plate.engrave #go{opacity:.75;pointer-events:none}
+#plate.drive #go{opacity:0;transition:opacity .4s ease}
+
+#glint{position:absolute;inset:-40% -6%;overflow:hidden;pointer-events:none;border-radius:4px}
 #glint::after{content:"";position:absolute;top:0;bottom:0;left:-35%;width:26%;opacity:0;transform:skewX(-22deg);filter:blur(5px);mix-blend-mode:screen;
   background:linear-gradient(90deg,transparent,rgba(255,244,214,.95),transparent)}
 #plate.glint-go #glint::after{animation:glint .75s ease-out forwards}
@@ -385,7 +432,8 @@ paintSound();
 /* ---------- layout: video box is "cover", but never lets the plate overflow narrow screens ---------- */
 function layout(){
   const vw=innerWidth, vh=innerHeight; let sw=Math.max(vw,vh*16/9);
-  if(P1.w*sw>vw*.92) sw=vw*.92/P1.w;
+  const maxPlateW=Math.min(vw*.76,vw-88);
+  if(P1.w*sw>maxPlateW) sw=maxPlateW/P1.w;
   const sh=sw*9/16;
   Object.assign(stage.style,{width:sw+'px',height:sh+'px',left:(vw-sw)/2+'px',top:(vh-sh)/2+'px'});
 }
@@ -402,15 +450,30 @@ const STD=/^[A-Z]{2}[0-9]{1,2}[A-Z]{0,3}[0-9]{4}$/, BH=/^[0-9]{2}BH[0-9]{4}[A-Z]
 const valid=p=>STD.test(p)||BH.test(p);
 const clean=s=>s.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,10);
 
+/* dynamically adjust font size and letter spacing to fill the plate comfortably without overflowing */
+function updatePlateTypography(v){
+  const len=v.length;
+  let fSize=72, lSpace=0.08;
+  if(len<=5){ fSize=72; lSpace=0.08; }
+  else if(len===6){ fSize=73; lSpace=0.10; }
+  else if(len===7){ fSize=75; lSpace=0.12; }
+  else if(len===8){ fSize=76; lSpace=0.13; }
+  else if(len===9){ fSize=74; lSpace=0.10; }
+  else if(len===10){ fSize=72; lSpace=0.07; }
+  else { fSize=Math.max(48, 72 - (len-10)*4); lSpace=0.03; }
+  chars.style.fontSize=fSize+'cqh';
+  chars.style.letterSpacing=lSpace+'em';
+}
+
 function say(html,bad){ msg.innerHTML=html; msg.classList.toggle('bad',!!bad); msg.classList.add('show'); }
 function renderChars(v){
+  updatePlateTypography(v);
   const cur=chars.textContent;
   if(v.startsWith(cur)){ for(let i=cur.length;i<v.length;i++){ const s=document.createElement('span'); s.className='ch'; s.style.setProperty('--d',(i*.17).toFixed(2)+'s'); s.style.setProperty('--i',i); s.innerHTML='<i>'+v[i]+'</i>'; chars.appendChild(s);} }
   else if(cur.startsWith(v)){ while(chars.children.length>v.length) chars.lastChild.remove(); }
   else { chars.innerHTML=''; renderChars(v); return; }
   const empty=!v.length;
   phold.style.display=empty?'flex':'none';
-  if(!empty && !$('#caret')){ } 
   let caret=$('#caret'); if(!caret){ caret=document.createElement('span'); caret.id='caret'; }
   chars.appendChild(caret);
   caret.style.display=empty?'none':'inline-block';
@@ -473,9 +536,15 @@ async function confirm(){
   if(state.stage!=='typing') return;
   state.stage='engrave'; input.blur(); go.disabled=true; msg.classList.remove('show');
   lookupP=lookupVehicle(state.plate);
+  // 1. Mechanical stamping into the physical plate surface
+  plate.classList.add('engraving');
+  await wait(220);
+  // 2. Lock permanently into the plate: characters are strictly frozen, no floating or drifting
+  plate.classList.remove('engraving');
   plate.classList.add('engrave');
-  await wait(520); plate.classList.add('glint-go');
-  await wait(900);
+  // 3. Specular glint reflection across the newly stamped metal plate
+  await wait(260); plate.classList.add('glint-go');
+  await wait(750);
   if(RM){ return openScreen(); }
   startDrive();
 }
@@ -501,6 +570,7 @@ function placeStar(s){
 }
 async function startDrive(){
   state.stage='drive';
+  plate.classList.add('drive');
   v2.currentTime=0; v2.muted=!state.sound;
   const k0=kfAt(0);
   plate.style.transition='left .25s ease,top .25s ease,width .25s ease,height .25s ease,opacity .5s';
