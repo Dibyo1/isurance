@@ -36,112 +36,48 @@ a{color:inherit}
   background:linear-gradient(180deg,#0f2d62,var(--screen));box-shadow:0 0 6cqw rgba(77,178,255,.35);transition:opacity .7s ease}
 #glass.on{opacity:1}
 
-#plate{position:absolute;container-type:size;opacity:0;pointer-events:none;transition:opacity .5s ease}
+/* plate is drawn at 908x200 and scaled onto the video plate by JS */
+#plate{position:absolute;left:0;top:0;width:908px;height:200px;transform-origin:0 0;opacity:0;pointer-events:none;transition:opacity .5s ease;will-change:transform}
 #plate.ready{opacity:1;pointer-events:auto}
-#plate.shake{animation:shake .38s}
-@keyframes shake{20%{transform:translateX(-1.6%)}40%{transform:translateX(1.6%)}60%{transform:translateX(-1%)}80%{transform:translateX(.8%)}}
+#plate.shake #chars{animation:shake .38s}
+@keyframes shake{20%{transform:translateX(-14px)}40%{transform:translateX(14px)}60%{transform:translateX(-9px)}80%{transform:translateX(7px)}}
 
-#chars{
-  position:absolute;
-  left:5%;
-  right:5%;
-  top:0;
-  bottom:0;
+#chars{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:156px;line-height:1;
+  text-transform:uppercase;white-space:nowrap;pointer-events:none;
+  gap:var(--gap,0px);transition:font-size .18s ease,gap .18s ease}
+#plate.engrave #chars{transition:none}
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  width:90%;
-  height:100%;
-
-  font-family:"Barlow Condensed","Arial Narrow",Bahnschrift,sans-serif;
-  font-weight:700;
-  font-size:62cqh;
-  line-height:1;
-  letter-spacing:.045em;
-  text-transform:uppercase;
-  white-space:nowrap;
-
-  pointer-events:none;
-  transform:none;
-  transform-origin:center center;
-  overflow:hidden;
-}
-
-.ch{
-  display:inline-block;
-  color:#14161b;
-  text-shadow:0 .07em .1em rgba(0,0,0,.38);
-  animation:float 2.1s ease-in-out var(--d,0s) infinite;
-  will-change:transform;
-}
+.ch{display:inline-block;color:#14161b;text-shadow:0 .07em .1em rgba(0,0,0,.38);animation:float 2.1s ease-in-out var(--d,0s) infinite}
 .ch>i{display:inline-block;font-style:normal;animation:pop .32s cubic-bezier(.2,.9,.3,1.25)}
 @keyframes pop{from{opacity:0;transform:translateY(.25em) scale(.7)}to{opacity:1;transform:none}}
 @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-.075em) scale(1.035)}}
 
-#plate.engrave #chars{
-  transform:none !important;
-  transform-origin:center center;
-}
-
-#plate.engrave .ch{
-  animation:sink .55s cubic-bezier(.3,.7,.2,1) forwards;
-  animation-delay:calc(var(--i,0)*45ms);
-  will-change:auto;
-}
-
-#plate.engrave .ch,
-#plate.engrave .ch > i{
-  position:relative;
-}
-
-#plate.engrave .ch > i{
-  transform:none !important;
-}
-
+/* engrave: sink once, then stay put (transform:none) */
+#plate.engrave .ch{animation:sink .55s cubic-bezier(.3,.7,.2,1) forwards;animation-delay:calc(var(--i,0)*45ms)}
 @keyframes sink{
   from{transform:translateY(-.09em) scale(1.06);color:#14161b;text-shadow:0 .18em .2em rgba(0,0,0,.4)}
-  to{transform:none;color:#2a2c32;text-shadow:0 .018em 0 rgba(255,255,255,.75),0 -.02em 0 rgba(0,0,0,.65),.03em .03em .04em rgba(0,0,0,.3)}
-}
+  to{transform:none;color:#2a2c32;text-shadow:0 .018em 0 rgba(255,255,255,.75),0 -.02em 0 rgba(0,0,0,.65),.03em .03em .04em rgba(0,0,0,.3)}}
 
-#caret{display:inline-block;width:.07em;height:.78em;margin-left:.06em;background:#14161b;animation:blink 1s steps(1) infinite}
-#plate.engrave #caret{display:none}
+#caret{position:relative;width:0;height:.78em;margin-left:calc(var(--gap,0px)*-1)}
+#caret::after{content:"";position:absolute;left:.06em;top:0;width:.07em;height:100%;background:#14161b;animation:blink 1s steps(1) infinite}
+#plate.engrave #caret{display:none!important}
 @keyframes blink{50%{opacity:0}}
-#phold{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2cqh;
-  font:600 17cqh "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(20,22,27,.42);pointer-events:none;white-space:nowrap}
-#phold b{display:inline-block;width:.6cqh;height:30cqh;background:#14161b;animation:blink 1s steps(1) infinite}
+
+#phold{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;font:600 36px "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(20,22,27,.42);pointer-events:none;white-space:nowrap}
+#phold b{display:inline-block;width:3px;height:68px;background:#14161b;animation:blink 1s steps(1) infinite}
 #plateInput{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;background:transparent;color:transparent;cursor:text;z-index:1}
 
-#go{
-  position:absolute;
-  left:calc(100% + 2.5cqh);
-  top:50%;
-
-  width:64cqh;
-  height:64cqh;
-
-  transform:translateY(-50%);
-  z-index:2;
-  border:0;
-  border-radius:50%;
-  background:#14161b;
-  color:#fff;
-  display:grid;
-  place-items:center;
-  box-shadow:0 1.5cqh 3cqh rgba(0,0,0,.38),inset 0 0 0 .7cqh rgba(255,255,255,.14);
-  transition:opacity .25s,transform .35s;
-  cursor:pointer;
-}
+/* arrow lives OUTSIDE the plate, as a sibling in #stage; JS positions it */
+#go{position:absolute;z-index:3;border:0;border-radius:50%;background:#14161b;color:#fff;display:grid;place-items:center;cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,.4),inset 0 0 0 2px rgba(255,255,255,.14);
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .35s}
 #go svg{width:48%;height:48%}
-#go:disabled{opacity:.28;cursor:not-allowed}
+#go.show{opacity:1;pointer-events:auto}
+#go.show:disabled{opacity:.28;cursor:not-allowed}
 #go.live{animation:ring 1.7s ease-out infinite}
-@keyframes ring{0%{box-shadow:0 1.5cqh 3cqh rgba(0,0,0,.38),0 0 0 0 rgba(255,178,62,.8)}100%{box-shadow:0 1.5cqh 3cqh rgba(0,0,0,.38),0 0 0 14cqh rgba(255,178,62,0)}}
-#plate.engrave #go{
-  opacity:0;
-  transform:translateY(-50%) scale(.4);
-  pointer-events:none;
-}
+@keyframes ring{0%{box-shadow:0 4px 12px rgba(0,0,0,.4),0 0 0 0 rgba(255,178,62,.8)}100%{box-shadow:0 4px 12px rgba(0,0,0,.4),0 0 0 14px rgba(255,178,62,0)}}
+#go.gone{opacity:0!important;transform:scale(.4);pointer-events:none}
 
 #glint{position:absolute;inset:-40% -6%;overflow:hidden;pointer-events:none;border-radius:4px}
 #glint::after{content:"";position:absolute;top:0;bottom:0;left:-35%;width:26%;opacity:0;transform:skewX(-22deg);filter:blur(5px);mix-blend-mode:screen;
@@ -304,10 +240,10 @@ footer{margin-top:60px;padding:30px 0 calc(40px + var(--sab));border-top:1px sol
       <div id="phold"><b></b>Enter your vehicle number</div>
       <div id="glint"></div>
       <input id="plateInput" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="14" aria-label="Vehicle registration number">
-      <button id="go" type="button" disabled aria-label="Confirm vehicle number">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
     </div>
+    <button id="go" type="button" disabled aria-label="Confirm vehicle number">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
     <div id="plateMsg" role="status" aria-live="polite"></div>
   </div>
 
@@ -436,7 +372,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DEMO=true;                       // demo OTP = 123456. Set false once a real OTP API is wired in.
 const P1={x:.316,y:.619,w:.368,h:.144}; // blank plate box on LAST frame of part1 (fractions of the frame)
-const AR=4.54, STOP=2.74;               // plate aspect; part2 time (s) where the screen is framed — frames after ~3.0s degrade
+const STOP=2.74;               // part2 time (s) where the screen is framed — frames after ~3.0s degrade
 // plate box over time in part2: [t, x, y, w, h]
 const KF=[[0,.308,.408,.384,.231],[.2,.316,.435,.368,.221],[.4,.345,.527,.309,.183],[.6,.376,.619,.249,.148],[.8,.398,.708,.206,.119],[1,.406,.792,.189,.108],[1.2,.406,.906,.19,.094]];
 // steering-wheel emblem track in part2: [t, cx, cy, diameter] (blurred out so no brand mark shows)
@@ -460,25 +396,51 @@ snd.addEventListener('click',()=>{ state.sound=!state.sound; paintSound(); });
 paintSound();
 
 /* ---------- layout: video box is "cover", but never lets the plate overflow narrow screens ---------- */
+const DW=908, DH=200;          // design size of the plate (must match the CSS)
+const GO_X=.70;                // x (fraction of frame) where the arrow starts: just right of the REAL plate's outer edge. Tune this.
+let cur=[P1.x,P1.y,P1.w,P1.h];
+
+function setRect(x,y,w,h){     // x,y,w,h = fractions of the video frame
+  cur=[x,y,w,h];
+  const sw=stage.clientWidth, sh=stage.clientHeight;
+  plate.style.transform='translate('+x*sw+'px,'+y*sh+'px) scale('+(w*sw/DW)+','+(h*sh/DH)+')';
+}
+function placeGo(){
+  const sw=stage.clientWidth, sh=stage.clientHeight, vw=innerWidth;
+  const left=Math.max(GO_X,P1.x+P1.w)*sw, gap=Math.max(8,Math.min(sw*.016,18));
+  const room=vw-((vw-sw)/2+left)-8;
+  const d=Math.max(28,Math.min(P1.h*sh*.9,room-gap));
+  Object.assign(go.style,{width:d+'px',height:d+'px',left:(left+gap)+'px',top:((P1.y+P1.h/2)*sh-d/2)+'px'});
+}
 function layout(){
   const vw=innerWidth, vh=innerHeight; let sw=Math.max(vw,vh*16/9);
   const maxPlateW=Math.min(vw*.76,vw-88);
   if(P1.w*sw>maxPlateW) sw=maxPlateW/P1.w;
   const sh=sw*9/16;
   Object.assign(stage.style,{width:sw+'px',height:sh+'px',left:(vw-sw)/2+'px',top:(vh-sh)/2+'px'});
+  setRect(...cur); placeGo();
 }
-function setBox(cx,cy,w){
-  const h=w*16/9/AR;
-  Object.assign(plate.style,{left:(cx-w/2)*100+'%',top:(cy-h/2)*100+'%',width:w*100+'%',height:h*100+'%'});
-}
-function box1(){ setBox(P1.x+P1.w/2, P1.y+P1.h/2, P1.w); Object.assign(msg.style,{top:(P1.y+P1.h+.03)*100+'%'}); }
+function box1(){ setRect(P1.x,P1.y,P1.w,P1.h); msg.style.top=(P1.y+P1.h+.03)*100+'%'; placeGo(); }
 addEventListener('resize',layout);
 layout(); box1();
+if(/debug/.test(location.search)) plate.style.outline='3px solid red'; // open /?debug to see the plate box
 
 /* ---------- plate validation ---------- */
 const STD=/^[A-Z]{2}[0-9]{1,2}[A-Z]{0,3}[0-9]{4}$/, BH=/^[0-9]{2}BH[0-9]{4}[A-Z]{1,2}$/;
 const valid=p=>STD.test(p)||BH.test(p);
 const clean=s=>s.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,10);
+
+const cv=document.createElement('canvas').getContext('2d');
+function fit(){
+  const L=[...chars.querySelectorAll('.ch')], n=L.length; if(!n) return;
+  cv.font='700 100px "Barlow Condensed","Arial Narrow",sans-serif';
+  const w100=L.reduce((s,e)=>s+cv.measureText(e.textContent).width,0);
+  const T=DW*.88;                                   // number spans 88% of the plate width
+  const fs=Math.min(DH*.80,100*T/w100), nat=w100*fs/100;
+  const gap=n>1?Math.max(0,Math.min((T-nat)/(n-1),fs*.3)):0;
+  chars.style.fontSize=fs+'px'; chars.style.gap=gap+'px'; chars.style.setProperty('--gap',gap+'px');
+}
+document.fonts&&document.fonts.ready.then(fit);
 
 function say(html,bad){ msg.innerHTML=html; msg.classList.toggle('bad',!!bad); msg.classList.add('show'); }
 function renderChars(v){
@@ -490,7 +452,8 @@ function renderChars(v){
   phold.style.display=empty?'flex':'none';
   let caret=$('#caret'); if(!caret){ caret=document.createElement('span'); caret.id='caret'; }
   chars.appendChild(caret);
-  caret.style.display=empty?'none':'inline-block';
+  caret.hidden=empty;
+  fit();
 }
 function onType(){
   if(state.stage!=='typing') return;
@@ -509,7 +472,7 @@ stage.addEventListener('pointerdown',e=>{ if(state.stage==='typing' && !e.target
 /* ---------- boot: part1 (car -> plate) ---------- */
 function showPlate(){
   if(state.stage!=='boot') return;
-  state.stage='typing'; plate.classList.add('ready'); say('Type your car or bike number');
+  state.stage='typing'; plate.classList.add('ready'); go.classList.add('show'); say('Type your car or bike number');
   try{ input.focus({preventScroll:true}); }catch(e){}
 }
 function fatal(){ $('#fatal').hidden=false; }
@@ -548,7 +511,7 @@ gate.addEventListener('click',()=>{ gate.hidden=true; startV1(); });
 let lookupP=null;
 async function confirm(){
   if(state.stage!=='typing') return;
-  state.stage='engrave'; input.blur(); go.disabled=true; msg.classList.remove('show');
+  state.stage='engrave'; input.blur(); go.disabled=true; go.classList.remove('live'); go.classList.add('gone'); $('#caret')?.remove(); msg.classList.remove('show');
   lookupP=lookupVehicle(state.plate);
   plate.classList.add('engrave');
   await wait(520); plate.classList.add('glint-go');
@@ -561,8 +524,7 @@ function kfAt(t){
   let i=0; while(i<KF.length-2 && t>KF[i+1][0]) i++;
   const a=KF[i], b=KF[i+1], u=Math.min(1,Math.max(0,(t-a[0])/(b[0]-a[0])));
   const L=(p,q)=>p+(q-p)*u;
-  const x=L(a[1],b[1]), y=L(a[2],b[2]), w=L(a[3],b[3]), h=L(a[4],b[4]);
-  return {cx:x+w/2, cy:y+h/2, w, a: t<.9?1:Math.max(0,1-(t-.9)/.35)};
+  return {x:L(a[1],b[1]),y:L(a[2],b[2]),w:L(a[3],b[3]),h:L(a[4],b[4]),a:t<.9?1:Math.max(0,1-(t-.9)/.35)};
 }
 function starAt(t){
   if(t<STAR[0][0]) return null;
@@ -580,8 +542,8 @@ async function startDrive(){
   state.stage='drive';
   v2.currentTime=0; v2.muted=!state.sound;
   const k0=kfAt(0);
-  plate.style.transition='left .25s ease,top .25s ease,width .25s ease,height .25s ease,opacity .5s';
-  setBox(k0.cx,k0.cy,k0.w);
+  plate.style.transition='transform .25s ease,opacity .5s';
+  setRect(k0.x,k0.y,k0.w,k0.h);
   v2.style.opacity=1;                       // 250ms cross-fade from part1's last frame to part2's first frame
   await wait(260);
   plate.style.transition='opacity .2s';
@@ -590,7 +552,7 @@ async function startDrive(){
   const tick=()=>{
     if(state.stage!=='drive') return;
     const t=v2.currentTime, k=kfAt(t);
-    if(k){ setBox(k.cx,k.cy,k.w); plate.style.opacity=k.a; } else plate.style.opacity=0;
+    if(k){ setRect(k.x,k.y,k.w,k.h); plate.style.opacity=k.a; } else plate.style.opacity=0;
     placeStar(starAt(t));
     if(t>=STOP || v2.ended){ v2.pause(); return afterDrive(); }
     requestAnimationFrame(tick);
